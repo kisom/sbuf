@@ -3,10 +3,7 @@
 // buffer is closed, its storage is zeroised.
 package sbuf
 
-import (
-	"errors"
-	"io"
-)
+import "io"
 
 func zero(in []byte, n int) {
 	if in == nil {
