@@ -75,11 +75,8 @@ func (buf *Buffer) grow(n int) {
 	buf.buf = tmp
 }
 
-var ErrTooLarge = errors.New("sbuf: buffer is too large")
-
 // Write appends the contents of p to the buffer, growing the buffer
-// as needed. The return value n is the length of p; err is always nil. If
-// the buffer becomes too large, Write will panic with ErrTooLarge.
+// as needed. The return value n is the length of p; err is always nil.
 func (buf *Buffer) Write(p []byte) (int, error) {
 	r := len(buf.buf) + len(p)
 	if cap(buf.buf) < r {
