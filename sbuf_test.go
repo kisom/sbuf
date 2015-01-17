@@ -134,6 +134,26 @@ func TestNewBufferFrom(t *testing.T) {
 	}
 }
 
+func TestBytes(t *testing.T) {
+	p := make([]byte, len(testMessage1))
+	copy(p, testMessage1)
+	buf := NewBufferFrom(p)
+
+	out := buf.Bytes()
+	if buf.buf != nil {
+		t.Fatal("buffer was not closed")
+	}
+
+	if !bytes.Equal(out, testMessage1) {
+		t.Fatal("buffer did not return the right data")
+	}
+
+	out = buf.Bytes()
+	if out != nil {
+		t.Fatal("a closed buffer should return nil for Bytes")
+	}
+}
+
 func BenchmarkRead(b *testing.B) {
 	b.N = 2000
 	pub, priv, err := box.GenerateKey(rand.Reader)

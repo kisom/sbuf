@@ -90,7 +90,8 @@ func (buf *Buffer) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-// Close destroys and zeroises the buffer.
+// Close destroys and zeroises the buffer. The buffer will be re-opened
+// on the next write.
 func (buf *Buffer) Close() {
 	zero(buf.buf, len(buf.buf))
 	buf.buf = nil
@@ -104,4 +105,16 @@ func (buf *Buffer) Len() int {
 // Cap returns the capacity of the buffer.
 func (buf *Buffer) Cap() int {
 	return cap(buf.buf)
+}
+
+// Bytes returns the bytes currently in the buffer, and closes itself.
+func (buf *Buffer) Bytes() []byte {
+	if buf.buf == nil {
+		return nil
+	}
+
+	p := make([]byte, buf.Len())
+	buf.Read(p)
+	buf.Close()
+	return p
 }
