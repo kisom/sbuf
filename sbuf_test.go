@@ -154,6 +154,29 @@ func TestBytes(t *testing.T) {
 	}
 }
 
+func TestRWByte(t *testing.T) {
+	buf := NewBuffer(0)
+	c := byte(42)
+	err := buf.WriteByte(c)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+
+	c, err = buf.ReadByte()
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+
+	if c != 42 {
+		t.Fatal("Expected 42, have %d", c)
+	}
+
+	_, err = buf.ReadByte()
+	if err == nil {
+		t.Fatal("Expected EOF")
+	}
+}
+
 func BenchmarkRead(b *testing.B) {
 	b.N = 2000
 	pub, priv, err := box.GenerateKey(rand.Reader)

@@ -65,6 +65,19 @@ func (buf *Buffer) Read(p []byte) (int, error) {
 	return copyLength, nil
 }
 
+// ReadByte reads the next byte from the buffer. If the buffer has no
+// data to return, err is io.EOF; otherwise it is nil.
+func (buf *Buffer) ReadByte() (byte, error) {
+	if len(buf.buf) == 0 {
+		return 0, io.EOF
+	}
+
+	c := buf.buf[0]
+	buf.buf[0] = 0
+	buf.buf = buf.buf[1:]
+	return c, nil
+}
+
 func (buf *Buffer) grow(n int) {
 	tmp := make([]byte, len(buf.buf), len(buf.buf)+n)
 	copy(tmp, buf.buf)
@@ -88,6 +101,17 @@ func (buf *Buffer) Write(p []byte) (int, error) {
 	}
 	buf.buf = append(buf.buf, p...)
 	return len(p), nil
+}
+
+// WriteByte adds the byte c to the buffer, growing the buffer as needed.
+func (buf *Buffer) WriteByte(c byte) error {
+	r := len(buf.buf) + 1
+	if cap(buf.buf) < r {
+		l := r * 2
+		buf.grow(l - cap(buf.buf))
+	}
+	buf.buf = append(buf.buf, c)
+	return nil
 }
 
 // Close destroys and zeroises the buffer. The buffer will be re-opened
